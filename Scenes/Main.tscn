@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cnvmjldmkgfm6"]
+
+[ext_resource type="Script" uid="uid://brfqc34bbe2dn" path="res://Code/main.gd" id="1_idj7w"]
+[ext_resource type="PackedScene" uid="uid://jcspb73t66wa" path="res://Scenes/enemy.tscn" id="2_kln2b"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rgh2o"]
+size = Vector2(7586, 103)
+
+[node name="Main" type="Node2D" unique_id=1537533579]
+script = ExtResource("1_idj7w")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1327445608]
+position = Vector2(0, 319)
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=26505789]
+shape = SubResource("RectangleShape2D_rgh2o")
+debug_color = Color(0, 0, 0, 0.41960785)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=343184249]
+
+[node name="Enemy" parent="." unique_id=1156159831 instance=ExtResource("2_kln2b")]
+position = Vector2(0, 244)
+
+[node name="MobSpawner" type="Node2D" parent="." unique_id=1564503835]
