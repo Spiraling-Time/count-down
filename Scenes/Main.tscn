@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://brfqc34bbe2dn" path="res://Code/main.gd" id="1_idj7w"]
 [ext_resource type="PackedScene" uid="uid://jcspb73t66wa" path="res://Scenes/enemy.tscn" id="2_kln2b"]
+[ext_resource type="Texture2D" uid="uid://dks0l84nxcovl" path="res://Art/icon.svg" id="3_kln2b"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rgh2o"]
 size = Vector2(7586, 103)
@@ -24,3 +25,10 @@ debug_color = Color(0, 0, 0, 0.41960785)
 position = Vector2(0, 244)
 
 [node name="MobSpawner" type="Node2D" parent="." unique_id=1564503835]
+
+[node name="Closest" type="Node2D" parent="." unique_id=1343245298]
+
+[node name="Sprite2D" type="Sprite2D" parent="Closest" unique_id=656996839]
+position = Vector2(0, -82.99999)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_kln2b")
