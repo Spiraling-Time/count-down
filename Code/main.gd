@@ -1,6 +1,6 @@
 extends Node2D
 
-const SPAWN_DISTANCE = 950.0
+const SPAWN_DISTANCE = 1000.0
 
 @onready var MobSpawner = $MobSpawner
 @onready var Enemy = $Enemy
@@ -24,10 +24,10 @@ func _process(delta: float) -> void:
 	await check_closest()
 	
 func spawn_mob():
-	if number_of_mobs < 3:
+	if number_of_mobs < 2:
 		Closest.visible = true
 		var new_mob = Mob.instantiate()
-		new_mob.position = Vector2((side*SPAWN_DISTANCE)+randi_range(-50,50), 244.0)
+		new_mob.position = Vector2((side*SPAWN_DISTANCE)+randi_range(-100,100), 244.0)
 		side = -side
 		MobSpawner.add_child(new_mob)
 		number_of_mobs += 1

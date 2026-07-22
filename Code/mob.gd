@@ -9,6 +9,8 @@ var main
 
 var target
 
+var gravity = 7
+
 func _ready() -> void:
 	main = get_tree().current_scene
 	target = (Enemy.position-position).normalized()
@@ -18,18 +20,39 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:	
 	#if !position.distance_to(Enemy.position) <= SPEED/2.0:
 	target = (Enemy.position-position).normalized()
-	velocity = SPEED*target
-	collider.position.x = target.x*25.0
+	var target_x = target.x
+	velocity.x = SPEED*target_x
+	if Enemy.position.y-position.y > 1:
+		collider.position.x = 0.0
+		collider.position.y = 30.0
+		collider.rotation_degrees = 90.0
+	else:
+		collider.position.y = 0.0
+		collider.rotation_degrees = 0.0
+		collider.position.x = target_x*25.0
 	
 	#else: velocity = Vector2.ZERO
+	var jumping = false
 	
 	if main.current_active_mob == str(name):
 		if Input.is_action_just_pressed("right"):
 			velocity.x = DASH_SPEED
 		elif Input.is_action_just_pressed("left"):
 			velocity.x = -DASH_SPEED
+		if Input.is_action_just_pressed("up") and is_on_floor():
+			velocity.y = -10000
+			jumping = true
+		#print(position.y)
+	if !jumping:
+		if is_on_floor():
+			velocity.y = 0
+		elif velocity.y != 50: velocity.y = 50
+		else: velocity.y *= gravity
+		if velocity.y > 1000: velocity.y = 1000
 
 	move_and_slide()
+	
+	if collider.has_overlapping_bodies(): _on_area_2d_body_entered(collider.get_overlapping_bodies()[0])
 	
 func die():
 	main.number_of_mobs -= 1

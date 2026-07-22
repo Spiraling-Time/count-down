@@ -21,10 +21,18 @@ func _on_timer_timeout() -> void:
 	weapon.visible = true
 	var closest_mob = main.MobSpawner.get_node(main.current_active_mob).position
 	face = (closest_mob-position).normalized()
-	if face.x == 1:
-		weapon.position.x = 25
+	if closest_mob.y-position.y < -1:
+		weapon.position.x = 0.0
+		weapon.position.y = -30.0
+		weapon.rotation_degrees = 90.0
 	else:
-		weapon.position.x = -25
+		weapon.position.y = 0.0
+		weapon.rotation_degrees = 0.0
+	if face.x == 1:
+		weapon.position.x = 25.0
+	else:
+		weapon.position.x = -25.0
+
 	await get_tree().create_timer(0.3).timeout
 	weapon.visible = false
 	timer.start()
