@@ -24,6 +24,8 @@ var player_position: Vector2
 
 var highlighted: Array = []
 
+var highlighting: bool = false
+
 func _ready() -> void:
 	randomize()
 	
@@ -46,7 +48,7 @@ func _physics_process(delta: float) -> void:
 		direction.y = -1
 	elif Input.is_action_just_pressed("down"):
 		direction.y = 1
-	elif Input.is_action_just_pressed("left"):
+	if Input.is_action_just_pressed("left"):
 		direction.x = -1
 	elif Input.is_action_just_pressed("right"):
 		direction.x = 1
@@ -60,11 +62,24 @@ func _physics_process(delta: float) -> void:
 		player_position = prev_pos
 		same = true
 	
-	if Input.is_action_pressed("select"):
-		if !same: highlighted.append(player_position)
-	else:
+
+	
+	
+	if Input.is_action_just_pressed("select"):
+		if !same:
+			highlighted.append(player_position)
+			if highlighting:
+				#print(player_position, " ", highlighted.get(highlighted.size()-2))
+				var dif = (player_position-highlighted.get(highlighted.size()-2)).abs()
+				if dif.x > 1.0 or dif.y > 1.0:
+					highlighting = false
+					highlighted = []
+			else: highlighting = true
+	elif highlighting:
 		if highlighted.size()>  0:
-			if grid[highlighted[0].x][highlighted[0].y] == 1: print("wounded, do nothing")
+			if grid[highlighted[0].x][highlighted[0].y] == 1:
+				print("wounded, do nothing")
+				highlighting = false
 			elif highlighted.size() > 1:
 				#print(highlighted.size())
 				var base_damage = grid[highlighted[0].x][highlighted[0].y]
@@ -79,15 +94,18 @@ func _physics_process(delta: float) -> void:
 						if highest == 0:
 							if count == highlighted.size():
 								print("wounded, attack for: ", base_damage) #maybe double if > than 3
+								highlighting = false
 								break
 							else:
 								print("wounded, do nothing")
+								highlighting = false
 								break
 					else:
 						print("wounded, do nothing")
+						highlighting = false
 						break
-						
-		highlighted = []
+		
+		if !highlighting: highlighted = []
 	
 	
 	for numbers in gridNode.get_children():
