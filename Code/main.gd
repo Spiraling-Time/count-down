@@ -22,6 +22,8 @@ var grid: Array[Array] = []
 
 var player_position: Vector2
 
+var highlighted: Array = []
+
 func _ready() -> void:
 	randomize()
 	
@@ -38,12 +40,13 @@ func _process(delta: float) -> void:
 	background2.scale = Vector2(size,size)
 
 func _physics_process(delta: float) -> void:
+	var prev_pos = player_position
 	var direction: Vector2= Vector2.ZERO
 	if Input.is_action_just_pressed("up"):
 		direction.y = -1
 	elif Input.is_action_just_pressed("down"):
 		direction.y = 1
-	if Input.is_action_just_pressed("left"):
+	elif Input.is_action_just_pressed("left"):
 		direction.x = -1
 	elif Input.is_action_just_pressed("right"):
 		direction.x = 1
@@ -52,15 +55,33 @@ func _physics_process(delta: float) -> void:
 	elif player_position.x >= grid_width: player_position.x = grid_width-1
 	if player_position.y < 0: player_position.y = 0
 	elif player_position.y >= grid_height: player_position.y = grid_height-1
+	if highlighted.find(player_position) != -1: player_position = prev_pos
+	
+	if Input.is_action_pressed("select"):
+		highlighted.append(player_position)
+	else:
+		#print(highlighted)
+		highlighted = []
+	
 	
 	for numbers in gridNode.get_children():
 		if numbers.coordinates == player_position:
-			numbers.scale = Vector2(1.2,1.2)
-			numbers.z_index = -2
+			if Input.is_action_pressed("select"): numbers.scale = Vector2(1.2,1.2)
+			else: numbers.scale = Vector2(1.1,1.1)
+			numbers.z_index = -1
+			numbers.get_node("Sprite2D").z_index = -5
+			numbers.modulate = Color.WEB_MAROON
 			#print(true)
+		elif highlighted.find(numbers.coordinates) != -1:
+			numbers.scale = Vector2(1.1,1.1)
+			numbers.z_index = -2
+			numbers.get_node("Sprite2D").z_index = -6
+			numbers.modulate = Color.RED
 		else:
 			numbers.scale = Vector2(1.0,1.0)
 			numbers.z_index = 0
+			numbers.get_node("Sprite2D").z_index = -4
+			numbers.modulate = Color.WHITE
 
 
 func create_grid():
@@ -70,6 +91,7 @@ func create_grid():
 		for y in grid_height:
 			column.append(everything.pop_at(randi() % everything.size()))
 		grid.append(column)
+	grid[4][2] = 1
 	for x in grid_width:
 		for y in grid_height:
 			var new_number = number.instantiate()
