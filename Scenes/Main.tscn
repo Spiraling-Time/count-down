@@ -1,48 +1,25 @@
 [gd_scene format=3 uid="uid://cnvmjldmkgfm6"]
 
-[ext_resource type="Script" uid="uid://brfqc34bbe2dn" path="res://Code/main.gd" id="1_idj7w"]
-[ext_resource type="PackedScene" uid="uid://jcspb73t66wa" path="res://Scenes/enemy.tscn" id="2_kln2b"]
-[ext_resource type="Texture2D" uid="uid://dks0l84nxcovl" path="res://Art/icon.svg" id="3_kln2b"]
+[ext_resource type="Script" uid="uid://brfqc34bbe2dn" path="res://Code/main.gd" id="1_bo1nx"]
+[ext_resource type="Texture2D" uid="uid://c68rh88y0t05h" path="res://Art/pixilart-sprite.png" id="1_jjgbg"]
+[ext_resource type="Texture2D" uid="uid://bbfdki1rt03ge" path="res://Art/pixil-frame-0(1).png" id="3_8gbba"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rgh2o"]
-size = Vector2(7586, 103.5)
+[node name="Battle" type="Node2D" unique_id=1912365271]
+script = ExtResource("1_bo1nx")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pbw6q"]
-size = Vector2(7586, 98.5)
+[node name="Camera2D" type="Camera2D" parent="." unique_id=326260837]
 
-[node name="Main" type="Node2D" unique_id=1537533579]
-script = ExtResource("1_idj7w")
+[node name="Background1" type="Sprite2D" parent="." unique_id=1149949840]
+z_index = -10
+scale = Vector2(2, 2)
+texture = ExtResource("1_jjgbg")
+hframes = 2
 
-[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1327445608]
-position = Vector2(0, 319)
-collision_layer = 0
-collision_mask = 0
+[node name="Background2" type="Sprite2D" parent="." unique_id=1083032420]
+z_index = -10
+scale = Vector2(2, 2)
+texture = ExtResource("3_8gbba")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=26505789]
-position = Vector2(0, -0.25)
-shape = SubResource("RectangleShape2D_rgh2o")
-debug_color = Color(0, 0, 0, 0.41960785)
+[node name="Overcomplicated Effect" type="Node2D" parent="Background2" unique_id=164152903]
 
-[node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=2016016813]
-position = Vector2(0, 319)
-collision_layer = 512
-collision_mask = 512
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2" unique_id=175970067]
-position = Vector2(0, 2.25)
-shape = SubResource("RectangleShape2D_pbw6q")
-debug_color = Color(0, 0, 0, 0.41960785)
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=343184249]
-
-[node name="Enemy" parent="." unique_id=1156159831 instance=ExtResource("2_kln2b")]
-position = Vector2(0, 244)
-
-[node name="MobSpawner" type="Node2D" parent="." unique_id=1564503835]
-
-[node name="Closest" type="Node2D" parent="." unique_id=1343245298]
-
-[node name="Sprite2D" type="Sprite2D" parent="Closest" unique_id=656996839]
-position = Vector2(0, -82.99999)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("3_kln2b")
+[node name="Grid" type="Node2D" parent="." unique_id=1583927648]

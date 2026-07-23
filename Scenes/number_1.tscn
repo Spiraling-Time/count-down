@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://bpoxwqq133qnl"]
+
+[ext_resource type="Script" uid="uid://dyuetvg8wurps" path="res://Code/number_1.gd" id="1_7lf8p"]
+[ext_resource type="FontFile" uid="uid://4kh22ay0xfd0" path="res://Fonts/m5x7.ttf" id="1_8x488"]
+[ext_resource type="Texture2D" uid="uid://d048nqj5mu74y" path="res://Art/circle(2).png" id="2_8x488"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_7lf8p"]
+font = ExtResource("1_8x488")
+font_size = 64
+font_color = Color(0, 0, 0, 1)
+
+[node name="Number1" type="Node2D" unique_id=430781070]
+script = ExtResource("1_7lf8p")
+
+[node name="Number" type="Label" parent="." unique_id=285963760]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.0
+offset_top = -30.0
+offset_right = 22.0
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "1"
+label_settings = SubResource("LabelSettings_7lf8p")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=601458963]
+z_index = -4
+z_as_relative = false
+texture = ExtResource("2_8x488")
