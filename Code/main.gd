@@ -14,7 +14,16 @@ const STARTING_NUMBERS: Array = [
 
 @onready var gridNode = $Grid
 
+@onready var PlayerHealth = $UI/PlayerHealth
+@onready var OpponentHealth = $UI/OpponentHealth
+var PHP
+var OHP
+@onready var Count = $UI/Count
+@onready var Countdown = $UI/Countdown
+@onready var UI = $UI
+
 var number = preload("res://Scenes/number_1.tscn")
+var player_damage = preload("res://Scenes/player_damage.tscn")
 
 var grid_width: int = 9
 var grid_height: int = 5
@@ -28,11 +37,20 @@ var highlighting: bool = false
 
 func _ready() -> void:
 	randomize()
+	player_position = Vector2(4,2)
+	
+	PlayerHealth.visible = true
+	OpponentHealth.visible = true
+	
+	PHP = 50
+	PlayerHealth.text = str(PHP)
+	OHP = 60
+	OpponentHealth.text = str(OHP)
 	
 	await create_grid()
 	
-	player_position = Vector2(4,2)
 
+	
 
 
 
@@ -40,6 +58,7 @@ func _process(delta: float) -> void:
 	aaa.rotation_degrees += 0.02
 	var size = BACK_SCALE + (sin(aaa.rotation_degrees)/1.5)
 	background2.scale = Vector2(size,size)
+	Countdown.text = str(int(Count.time_left))
 
 func _physics_process(delta: float) -> void:
 	var prev_pos = player_position
@@ -73,6 +92,7 @@ func _physics_process(delta: float) -> void:
 				var dif = (player_position-highlighted.get(highlighted.size()-2)).abs()
 				if dif.x > 1.0 or dif.y > 1.0:
 					print("wounded, do nothing")
+					damage_you_and_opponent(1,0)
 					highlighting = false
 					highlighted = []
 			else: highlighting = true
@@ -80,6 +100,7 @@ func _physics_process(delta: float) -> void:
 		if highlighted.size()>  0:
 			if grid[highlighted[0].x][highlighted[0].y] == 1:
 				print("wounded, do nothing")
+				damage_you_and_opponent(1,0)
 				highlighting = false
 			elif highlighted.size() > 1:
 				#print(highlighted.size())
@@ -94,15 +115,22 @@ func _physics_process(delta: float) -> void:
 						highest = grid[nums.x][nums.y] - 1
 						if highest == 0:
 							if count == highlighted.size():
-								print("wounded, attack for: ", base_damage) #maybe double if > than 3
+								var final_damage = base_damage
+								if base_damage > 3: final_damage *= 2
+								print("wounded, attack for: ", final_damage) #maybe double if > than 3
+								damage_you_and_opponent(1, base_damage)
 								highlighting = false
+								Count.stop()
+								Count.timeout.emit()
 								break
 							else:
 								print("wounded, do nothing")
+								damage_you_and_opponent(1,0)
 								highlighting = false
 								break
 					else:
 						print("wounded, do nothing")
+						damage_you_and_opponent(1,0)
 						highlighting = false
 						break
 		
@@ -133,6 +161,7 @@ func _physics_process(delta: float) -> void:
 
 
 func create_grid():
+	grid.clear()
 	var everything = STARTING_NUMBERS.duplicate()
 	for x in grid_width:
 		var column: Array = []
@@ -147,3 +176,46 @@ func create_grid():
 			new_number.coordinates = Vector2(x,y)
 			new_number.position = Vector2((x*50)-((grid_width * 50)/2)+50, (y*50)-((grid_height * 50)/2))
 			gridNode.add_child(new_number)
+	Count.start()
+
+func damage_you_and_opponent(you, opponent):
+	if opponent<= 3: OHP -= opponent
+	else: OHP -= opponent*2
+	OpponentHealth.text = str(OHP)
+	if opponent > 0: opponent_damage_visual(opponent)
+	if OHP <= 0:
+		OHP = 0
+		print("OPPONENT DEFEATED")
+		OpponentHealth.visible = false
+	else:
+		PHP -= you
+		PlayerHealth.text = str(PHP)
+		if you > 0: your_damage_visual(you)
+		if PHP <= 0:
+			PHP = 0
+			print("PLAYER DEFEATED")
+			PlayerHealth.visible = false
+
+func your_damage_visual(damage):
+	var new_damage = player_damage.instantiate()
+	new_damage.damage = damage
+	new_damage.player = true
+	UI.add_child(new_damage)
+func opponent_damage_visual(damage):
+	var new_damage = player_damage.instantiate()
+	new_damage.damage = damage
+	new_damage.player = false
+	UI.add_child(new_damage)
+
+
+func _on_count_timeout() -> void:
+	damage_you_and_opponent(1, 0)
+	print("wounded, do nothing")
+	
+	
+	highlighted = []
+	highlighting = false
+	for numbers in gridNode.get_children():
+		gridNode.remove_child(numbers)
+		numbers.queue_free()
+	create_grid()
