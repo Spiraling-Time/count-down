@@ -55,12 +55,38 @@ func _physics_process(delta: float) -> void:
 	elif player_position.x >= grid_width: player_position.x = grid_width-1
 	if player_position.y < 0: player_position.y = 0
 	elif player_position.y >= grid_height: player_position.y = grid_height-1
-	if highlighted.find(player_position) != -1: player_position = prev_pos
+	var same: bool = false
+	if highlighted.find(player_position) != -1:
+		player_position = prev_pos
+		same = true
 	
 	if Input.is_action_pressed("select"):
-		highlighted.append(player_position)
+		if !same: highlighted.append(player_position)
 	else:
-		#print(highlighted)
+		if highlighted.size()>  0:
+			if grid[highlighted[0].x][highlighted[0].y] == 1: print("wounded, do nothing")
+			elif highlighted.size() > 1:
+				#print(highlighted.size())
+				var base_damage = grid[highlighted[0].x][highlighted[0].y]
+				var highest = base_damage
+				var count = 0
+				for nums in highlighted:
+					count += 1
+					#print("highest: ", highest)
+					#print("grid: ", grid[nums.x][nums.y])
+					if grid[nums.x][nums.y] == highest:
+						highest = grid[nums.x][nums.y] - 1
+						if highest == 0:
+							if count == highlighted.size():
+								print("wounded, attack for: ", base_damage) #maybe double if > than 3
+								break
+							else:
+								print("wounded, do nothing")
+								break
+					else:
+						print("wounded, do nothing")
+						break
+						
 		highlighted = []
 	
 	
