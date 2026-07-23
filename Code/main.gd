@@ -19,8 +19,9 @@ func _ready() -> void:
 	Closest.visible = false
 
 func _process(delta: float) -> void:
-	#if Input.is_action_just_pressed("spawn"):
-	spawn_mob()
+	if number_of_mobs == 0: Closest.visible = false
+	if Input.is_action_just_pressed("spawn"):
+		spawn_mob()
 	await check_closest()
 	
 func spawn_mob():
