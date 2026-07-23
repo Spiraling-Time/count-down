@@ -72,6 +72,7 @@ func _physics_process(delta: float) -> void:
 				#print(player_position, " ", highlighted.get(highlighted.size()-2))
 				var dif = (player_position-highlighted.get(highlighted.size()-2)).abs()
 				if dif.x > 1.0 or dif.y > 1.0:
+					print("wounded, do nothing")
 					highlighting = false
 					highlighted = []
 			else: highlighting = true
@@ -109,18 +110,21 @@ func _physics_process(delta: float) -> void:
 	
 	
 	for numbers in gridNode.get_children():
-		if numbers.coordinates == player_position:
-			if Input.is_action_pressed("select"): numbers.scale = Vector2(1.2,1.2)
-			else: numbers.scale = Vector2(1.1,1.1)
+		if highlighted.find(numbers.coordinates) != -1:
+			if numbers.coordinates == player_position:
+				numbers.scale = Vector2(1.1,1.1)
+				numbers.z_index = -1
+				numbers.get_node("Sprite2D").z_index = -5
+			else:
+				numbers.scale = Vector2(1.1,1.1)
+				numbers.z_index = -2
+				numbers.get_node("Sprite2D").z_index = -6
+			numbers.modulate = Color.RED
+		elif numbers.coordinates == player_position:
+			numbers.scale = Vector2(1.1,1.1)
 			numbers.z_index = -1
 			numbers.get_node("Sprite2D").z_index = -5
 			numbers.modulate = Color.WEB_MAROON
-			#print(true)
-		elif highlighted.find(numbers.coordinates) != -1:
-			numbers.scale = Vector2(1.1,1.1)
-			numbers.z_index = -2
-			numbers.get_node("Sprite2D").z_index = -6
-			numbers.modulate = Color.RED
 		else:
 			numbers.scale = Vector2(1.0,1.0)
 			numbers.z_index = 0
