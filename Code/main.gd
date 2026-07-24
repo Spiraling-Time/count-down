@@ -35,6 +35,8 @@ var highlighted: Array = []
 
 var highlighting: bool = false
 
+var attacked: bool = false
+
 func _ready() -> void:
 	randomize()
 	player_position = Vector2(4,2)
@@ -84,7 +86,7 @@ func _physics_process(delta: float) -> void:
 
 	
 	
-	if Input.is_action_just_pressed("select"):
+	if Input.is_action_just_pressed("select") and !attacked:
 		if !same:
 			highlighted.append(player_position)
 			if highlighting:
@@ -120,8 +122,10 @@ func _physics_process(delta: float) -> void:
 								print("wounded, attack for: ", final_damage) #maybe double if > than 3
 								damage_you_and_opponent(1, base_damage)
 								highlighting = false
-								Count.stop()
-								Count.timeout.emit()
+								highlighted = []
+								attacked = true
+								#Count.stop()
+								#Count.timeout.emit()
 								break
 							else:
 								print("wounded, do nothing")
@@ -152,7 +156,8 @@ func _physics_process(delta: float) -> void:
 			numbers.scale = Vector2(1.1,1.1)
 			numbers.z_index = -1
 			numbers.get_node("Sprite2D").z_index = -5
-			numbers.modulate = Color.WEB_MAROON
+			if !attacked: numbers.modulate = Color.WEB_MAROON
+			else: numbers.modulate = Color(0.132, 0.0, 0.0, 1.0)
 		else:
 			numbers.scale = Vector2(1.0,1.0)
 			numbers.z_index = 0
@@ -209,6 +214,7 @@ func opponent_damage_visual(damage):
 
 
 func _on_count_timeout() -> void:
+	attacked = false
 	damage_you_and_opponent(1, 0)
 	print("wounded, do nothing")
 	
